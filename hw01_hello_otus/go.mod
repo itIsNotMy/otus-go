@@ -1,6 +1,6 @@
 module github.com/itIsNotMy/hw01_hello_otus
 
-go 1.50.1
+go 1.19
 
 require (
 	github.com/naoina/go-stringutil v0.1.0 // indirect
