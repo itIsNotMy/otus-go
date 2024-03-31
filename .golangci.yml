@@ -11,6 +11,10 @@ linters-settings:
 
 issues:
   exclude-rules:
+    - path: main.go
+      linters:
+        - gci
+        - gofumpt
     - path: _test\.go
       linters:
         - errcheck
