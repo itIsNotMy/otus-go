@@ -1,4 +1,4 @@
-module github.com/itIsNotMy/hw01_hello_otus
+module github.com/itIsNotMy/otus-go/hw01_hello_otus
 
 go 1.19
 
