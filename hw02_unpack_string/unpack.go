@@ -37,7 +37,7 @@ func unpacking(s string) []rune {
 
 			for j := 48; j < int(r[i])-1; j++ {
 
-				if res, val := runeKeyExist(i-2, r); res && val == 92 {
+				if res, val := runeKeyExist(i-2, r); res && isBackslash(val) {
 					result = append(result, r[i-1], r[i-2])
 				} else {
 					result = append(result, r[i-1])
@@ -71,11 +71,7 @@ func runeKeyExist(k int, r []rune) (bool, rune) {
 
 func isBackslash(s int32) bool {
 
-	if 92 == s {
-		return true
-	}
-
-	return false
+	return 92 == s
 }
 
 func isNumeric(s int32) bool {
@@ -108,11 +104,7 @@ func firstIsNumeric(s string) bool {
 
 	r := []rune(s)
 
-	if isNumeric(r[0]) {
-		return true
-	}
-
-	return false
+	return isNumeric(r[0])
 }
 
 func validator(s string) (bool, error) {
@@ -120,16 +112,16 @@ func validator(s string) (bool, error) {
 	var err error
 
 	if firstIsNumeric(s) {
-		err = fmt.Errorf("Первый символ не должен быть цифрой\n")
+		err = fmt.Errorf("первый символ не должен быть цифрой\n")
 	}
 
 	if numbersExist(s) {
-		err = fmt.Errorf("В строке есть число\n")
+		err = fmt.Errorf("в строке есть число\n")
 	}
 
-	if err == nil {
-		return true, err
+	if err != nil {
+		return false, err
 	}
 
-	return false, err
+	return true, err
 }
