@@ -2,103 +2,50 @@ package hw02unpackstring
 
 import (
 	"errors"
+	"strings"
 )
 
 var ErrInvalidString = errors.New("invalid string")
 
 func Unpack(s string) (string, error) {
-	if valid, err := validator(s); !valid {
-		return "", err
-	}
+	var builder strings.Builder
 
-	return string(unpacking(s)), nil
-}
+	var previous rune
 
-func unpacking(s string) []rune {
-	result := make([]rune, 0, len(s))
-
-	if len(s) <= 1 {
-		return []rune(s)
-	}
-
-	r := []rune(s)
-
-	for i := len(r) - 1; i >= 0; i-- {
-		if isNumeric(r[i]) {
-			if int(r[i]) == 48 {
-				i--
-				continue
+	for key, val := range s {
+		if isNumeric(val) {
+			if key == 0 {
+				return "", ErrInvalidString
 			}
 
-			for j := 48; j < int(r[i])-1; j++ {
-				if res, val := runeKeyExist(i-2, r); res && isBackslash(val) {
-					result = append(result, r[i-1], r[i-2])
-				} else {
-					result = append(result, r[i-1])
-				}
+			if isNumeric(previous) {
+				return "", ErrInvalidString
+			}
+
+			if isNull(val) {
+				str := builder.String()
+				updatedStr := str[:len(str)-1]
+				builder.Reset()
+				builder.WriteString(updatedStr)
+			}
+
+			for i := '0'; i < val-1; i++ {
+				builder.WriteRune(previous)
 			}
 		} else {
-			result = append(result, r[i])
+			builder.WriteRune(val)
 		}
+
+		previous = val
 	}
 
-	for i, j := 0, len(result)-1; i < len(result)/2; i, j = i+1, j-1 {
-		result[i], result[j] = result[j], result[i]
-	}
-
-	return result
+	return builder.String(), nil
 }
 
-func runeKeyExist(k int, r []rune) (bool, rune) {
-	var val rune
-
-	for key, val := range r {
-		if k == key {
-			return true, val
-		}
-	}
-
-	return false, val
-}
-
-func isBackslash(s int32) bool {
-	return s == 92
+func isNull(s int32) bool {
+	return s == '0'
 }
 
 func isNumeric(s int32) bool {
-	if 48 <= s && s <= 57 {
-		return true
-	}
-
-	return false
-}
-
-func numbersExist(s string) bool {
-	r := []rune(s)
-
-	for i := 0; i < len(s)-1; i++ {
-		if isNumeric(r[i]) && isNumeric(r[i+1]) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func firstIsNumeric(s string) bool {
-	if len(s) == 0 {
-		return false
-	}
-
-	r := []rune(s)
-
-	return isNumeric(r[0])
-}
-
-func validator(s string) (bool, error) {
-	if firstIsNumeric(s) || numbersExist(s) {
-		return false, ErrInvalidString
-	}
-
-	return true, nil
+	return '0' <= s && s <= '9'
 }
