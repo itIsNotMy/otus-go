@@ -2,7 +2,6 @@ package hw02unpackstring
 
 import (
 	"errors"
-	"fmt"
 )
 
 var ErrInvalidString = errors.New("invalid string")
@@ -97,19 +96,9 @@ func firstIsNumeric(s string) bool {
 }
 
 func validator(s string) (bool, error) {
-	var err error
-
-	if firstIsNumeric(s) {
-		err = fmt.Errorf("первый символ не должен быть цифрой")
+	if firstIsNumeric(s) || numbersExist(s) {
+		return false, ErrInvalidString
 	}
 
-	if numbersExist(s) {
-		err = fmt.Errorf("в строке есть число")
-	}
-
-	if err != nil {
-		return false, err
-	}
-
-	return true, err
+	return true, nil
 }
